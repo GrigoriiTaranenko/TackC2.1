@@ -74,7 +74,7 @@ int main(int argc, string argv[]) {
         }
     }
     
-    printf("%s", cipher);
+    printf("%s\n", cipher);
     
     return 0;
 }
