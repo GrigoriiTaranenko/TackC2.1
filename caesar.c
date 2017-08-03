@@ -31,6 +31,7 @@ int main(int argc, string argv[]) {
     int key;
     string cipher;
     if (argc != 2) {
+        printf("error \n");
         return 1;
     }
     
