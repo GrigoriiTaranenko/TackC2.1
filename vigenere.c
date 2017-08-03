@@ -1,59 +1,80 @@
 #include <stdio.h>
 #include <cs50.h>
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 
-bool checkIntInText(string text) {
-    int length = strlen(text);
-    for (int i = 0; i < length; i++) {
-        if (isalpha(text[i])) {
-            continue;       
-        } else {
-           return false;  
+
+const char minLowerAlpha = 'a';
+const char minUpperAlpha = 'A';
+
+char transformation(char letter, char regist, int key) {
+    letter = (letter - regist + key) % 26;
+    letter += regist;
+    return letter;
+}
+
+char numberSymbol(char alpha) {
+    if (alpha - 'a' >= 0) {
+        return alpha - 'a';
+    } else {
+        return alpha - 'A';
+    }
+}
+
+void addNumber(int *i, char alpha) {
+    if (alpha == '\0') {
+        *i = 0;
+    } else {
+        *i += 1; 
+    }
+}
+
+char checkKey(string key) { 
+    for (int i = 0; key[i] != '\0'; i++) {
+        if (!isalpha(key[i])) {
+            return 0; 
         }
     }
-    return true;
-}
-
-int registerText(char letter) {
-    if ((int)letter>96) {
-        return (int)letter - 97;
-    } else {
-        return (int)letter - 65;
-    }
-}
-
-int signSize(char letter) {
-    if ((int)letter>96) {
-        return 97;
-    } else {
-        return 65;
-    }
+    return 1;
 }
 
 
 int main(int argc, string argv[]) {
     string key, cipher;
-    int lengthKey, lengthCifre, numberKey;
-    if (argc != 2 || !checkIntInText(argv[1])) {
+    char symbol;
+    int j = 0;
+    
+    if (argc != 2) {
         printf("error \n");
         return 1;
     }
+    
     key = argv[1];
-    lengthKey = strlen(key);
-    printf("%s, \n", key);
-    numberKey = 0;
     
-    printf("Enter string \n");
+    if (!checkKey(key)) {
+        printf("error \n");
+        return 1;
+    } 
+    
     cipher = GetString();
-    lengthCifre = strlen(cipher);
     
-
-    for (int i = 0; i<lengthCifre; i++) {
-        if (isalpha(cipher[i])) {
-            cipher[i] = (registerText(cipher[i]) + registerText(key[numberKey])) % 26 + signSize(cipher[i]);
+    for (int i = 0; cipher[i] != '\0'; i++ ) {
+        if (isalpha(cipher[i]) != 0) {
+        
+            symbol = numberSymbol(key[j]);
+            
+            if (islower(cipher[i]) != 0) {        
+                cipher[i] = transformation(cipher[i], 'a', symbol);    
+            } else {
+                cipher[i] = transformation(cipher[i], 'A', symbol);    
+            }
+            
+            addNumber(&j, key[j+1]);
         }
-        numberKey = (numberKey + 1) % lengthKey;
     }
-    printf("cipher = %s \n", cipher);
+    
+    printf("%s", cipher);
+    
+    return 0;
 }
